@@ -50,13 +50,12 @@ describe('Test GET api/articles  endpoint', () => {
       .get('/api/articles/1')
       .expect(200)
   })
-  test('Test connection with GET api/articles, should receive all topics which should have keys (slug and description)', () => {
+  test('Test connection with GET api/article, should receive an article', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)
       .then(({ body }) => {
-        expect(body.length > 0).toBe(true)
-        expect(body).toEqual([{
+        expect(body).toEqual({Article : {
           article_id: 1,
           title: "Living in the shadow of a great man",
           topic: "mitch",
@@ -66,15 +65,15 @@ describe('Test GET api/articles  endpoint', () => {
           votes: 100,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-        }])
+        }})
       })
   })
-  test('Test that article id requested does not exist causing a Bad Request 400 response when given a number', () => {
+  test('Test that article id requested does not exist causing a Not Found 404 response when given a number', () => {
     return request(app)
       .get('/api/articles/999999')
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
-        expect(body).toEqual({ msg: "Bad Request" })
+        expect(body).toEqual({ msg: "Not Found" })
       })
   })
   test('Test that article id requested does not exist causing a Bad Request 400 response when given a random string', () => {

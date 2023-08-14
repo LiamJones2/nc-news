@@ -16,6 +16,7 @@ app.use((err, req, res, next) => {
     if(err.message === "Bad Request" || err.code === '22P02'){
         res.status(400).send({msg:"Bad Request"})
     }
+    else res.status(404).send({msg:"Not Found"})
 })
 
 app.use((err, req, res, next) => {

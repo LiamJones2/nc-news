@@ -3,9 +3,26 @@ const request = require('supertest');
 const db = require('../db/connection.js');
 const seed = require('../db/seeds/seed.js');
 const testData = require('../db/data/test-data/');
+const endpoints = require('../endpoints.json')
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
+
+describe('Test GET /api endpoint', () => {
+  test('Test connection with GET /api, should receive 200 as the status code to show connection', () => {
+      return request(app)
+          .get('/api')
+          .expect(200)                  
+  })
+  test('Test connection with GET /api, should receive all /api showing all endpoints', () => {
+      return request(app)
+          .get('/api')
+          .expect(200)
+          .then(({body}) => {
+              expect(body).toEqual(endpoints)
+          })        
+  })
+})
 
 describe('Test GET api/topics  endpoint', () => {
     test('Test connection with GET api/topics, should receive 200 as the status code to show connection', () => {

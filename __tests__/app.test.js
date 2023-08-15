@@ -44,8 +44,8 @@ describe('Test GET api/topics  endpoint', () => {
   })
 })
 
-describe('Test GET api/articles  endpoint', () => {
-  test('Test connection with GET api/articles, should receive 200 as the status code to show connection', () => {
+describe('Test GET api/article  endpoint', () => {
+  test('Test connection with GET api/article, should receive 200 as the status code to show connection', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)
@@ -55,7 +55,7 @@ describe('Test GET api/articles  endpoint', () => {
       .get('/api/articles/1')
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({Article : {
+        expect(body).toEqual({article : {
           article_id: 1,
           title: "Living in the shadow of a great man",
           topic: "mitch",
@@ -85,3 +85,12 @@ describe('Test GET api/articles  endpoint', () => {
       })
   })
 })
+
+
+// describe('Test GET api/articles  endpoint', () => {
+//   test('Test connection', () => {
+//     return request(app)
+//       .get('/api/articles')
+//       .expect(200)
+//   })
+// })

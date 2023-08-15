@@ -1,9 +1,12 @@
 const db = require('../db/connection.js');
 
 exports.returnAllArticles = () => {
-    const articlesQuery = db.query('SELECT *, SUM(article_id) as comment_count FROM articles LEFT JOIN comments ON articles.article_id = comment.article_id GROUP BY article_id')
-
+    const articlesQuery = 'SELECT articles.*, COUNT(comments.comment_id) as comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;'
     return db.query(articlesQuery).then(({ rows }) => {
+        rows.forEach((article) => {
+            delete article.body
+            +article.comment_count 
+        })
         return rows
     })
 }

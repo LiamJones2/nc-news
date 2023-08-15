@@ -36,10 +36,44 @@ describe('Test GET api/topics  endpoint', () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.length > 0).toBe(true)
-        expect(body).toEqual([{ "description": "The man, the Mitch, the legend", "slug": "mitch" },
-        { "description": "Not dogs", "slug": "cats" },
-        { "description": "what books are made of", "slug": "paper" }
-        ])
+        expect(body).toEqual(testData.topicData)
+      })
+  })
+})
+
+describe('Test GET api/articles  endpoint', () => {
+  test('Test connection with GET api/articles', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+  })
+  test('Test connection with GET api/articles and get expected keys and values', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length > 0).toBe(true)
+        body.forEach((article) => {
+          expect(article['author']).toBeString()
+          expect(article['title']).toBeString()
+          expect(article['article_id']).toBeInteger()
+          expect(article['created_at']).toBeString()
+          expect(article['votes']).toBeInteger()
+          expect(article['article_img_url']).toBeString()
+          expect(article['comment_count']).toBeInteger()
+          expect(article['body']).toBe(undefined)
+        })
+      })
+  })
+  test('Test connection with GET api/articles and get expected keys and values', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length > 0).toBe(true)
+        expect(body).toBeSortedBy('created_at', {
+          descending: true
+        })
       })
   })
 })
@@ -85,12 +119,3 @@ describe('Test GET api/article  endpoint', () => {
       })
   })
 })
-
-
-// describe('Test GET api/articles  endpoint', () => {
-//   test('Test connection', () => {
-//     return request(app)
-//       .get('/api/articles')
-//       .expect(200)
-//   })
-// })

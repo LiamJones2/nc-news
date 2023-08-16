@@ -18,12 +18,16 @@ exports.getArticle = (req, res, next) => {
     })
 }
 
+//nc-news-8
 exports.patchVotesByArticleId = (req, res, next) => {
     const {article_id} = req.params
     const {inc_votes} = req.body
+
     updateArticleVotesInDatabase(article_id, inc_votes).then((rows) => {
         res.status(200).send(rows[0])
     }).catch((err) => {
         next(err)
+        
     })
 }
+//nc-news-8

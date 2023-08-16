@@ -9,14 +9,19 @@ exports.getAllCommentsByArticleId = (req, res, next) => {
     })
 }
 
-//nc-news-6
+//nc-news-7
+
 exports.postNewCommentByArticleId = (req, res, next) => {
+
     const {article_id} = req.params
     const {username, body} = req.body
+
     addNewCommentByArticleIdToDatabase(article_id, username, body).then((rows) => {
+
         res.status(201).send(rows[0])
     }).catch((err) => {
         next(err)
+        
     })
 }
 

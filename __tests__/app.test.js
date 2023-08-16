@@ -203,6 +203,8 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
   })
 })
 
+
+
 describe('Test POST /api/article/:article_id/comments endpoint', () => {
   test('Test connection with /api/article/:article_id/comments endpoint', () => {
     return request(app)
@@ -210,6 +212,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
       .send({username:"butter_bridge", body: "pretty cool"})
       .expect(201)
   })
+
   test('Test new comment is made to database as confirmed by returned object of what was added to database', () => {
     return request(app)
       .post('/api/articles/1/comments')
@@ -227,6 +230,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
         })
       })
   })
+
   test('Test error when article does not exist', () => {
     return request(app)
       .post('/api/articles/9999/comments')
@@ -236,6 +240,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
         expect(body).toEqual({msg:"Article Not Found"})
       })
   })
+
   test('Test error when username does not exist', () => {
     return request(app)
       .post('/api/articles/1/comments')
@@ -245,6 +250,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
         expect(body).toEqual({msg:"Username Not Found"})
       })
   })
+
   test('Test should return 400 Bad Request response when the article_id is in the wrong format', () => {
     return request(app)
       .post('/api/articles/banana/comments')
@@ -254,6 +260,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
         expect(body).toEqual({ msg: "Bad Request" })
       })
   })
+
   test('Test should return 400 Bad Request response when there is no attached body', () => {
     return request(app)
       .post('/api/articles/1/comments')
@@ -262,6 +269,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
         expect(body).toEqual({ msg: "Bad Request" })
       })
   })
+
   test('Test should return 400 Bad Request response when the body does not have the correct information', () => {
     return request(app)
       .post('/api/articles/1/comments')
@@ -272,6 +280,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
       })
   })
 })
+
 
 describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test connection with PATCH /api/articles/:article_id endpoint', () => {

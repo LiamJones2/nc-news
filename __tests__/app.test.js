@@ -145,7 +145,7 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
       .then(({body}) => {
         expect(body.length === 12)
 
-        body.forEach((article) => {
+        body.comments.forEach((article) => {
           expect(article['votes']).toBeInteger()
           expect(article['comment_id']).toBeInteger()
           expect(article['article_id']).toBeInteger()
@@ -153,7 +153,7 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
           expect(article['body']).toBeString()
           expect(article['created_at']).toBeString()
         })
-        expect(body[0]).toEqual({
+        expect(body.comments[0]).toEqual({
           comment_id: 5,
           body: 'I hate streaming noses',
           article_id: 1,
@@ -163,14 +163,17 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
         })
       })
   })
+
   test('Test connection with GET api/article/:article_id/comments, should return all 12 comments connected to the article 1 but ensure it is in DESCENDING order so newest comments appear first', () => {
+    
     return request(app)
       .get('/api/articles/1/comments')
       .expect(200)
       .then(({body}) => {
         expect(body.length === 12)
-        expect(body).toBeSortedBy('created_at', {
+        expect(body.comments).toBeSortedBy('created_at', {
           descending : true
+
         })
       })
   })
@@ -179,7 +182,7 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
       .get('/api/articles/2/comments')
       .expect(200)
       .then(({body}) => {
-        expect(body).toEqual([])
+        expect(body).toEqual({comments:[]})
       })
   })
   test('Test connection with GET api/article/:article_id/comments, should return 404 Article Not Found response when there is no article with that article_id', () => {

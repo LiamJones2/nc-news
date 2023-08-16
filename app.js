@@ -16,6 +16,7 @@ app.get('/api/articles', getAllArticles);
 
 app.get('/api/articles/:article_id', getArticle);
 
+//nc-news-6
 app.get('/api/articles/:article_id/comments', getAllCommentsByArticleId);
 
 app.post('/api/articles/:article_id/comments', postNewCommentByArticleId);

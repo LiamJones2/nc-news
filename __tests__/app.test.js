@@ -61,7 +61,7 @@ describe('Test GET api/articles  endpoint', () => {
           created_at: '2020-11-03T09:12:00.000Z',
           votes: 0,
           article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
-          comment_count: '2'
+          comment_count: 2
         })
         body.forEach((article) => {
           expect(article['author']).toBeString()
@@ -75,7 +75,7 @@ describe('Test GET api/articles  endpoint', () => {
         })
       })
   })
-  test('Test connection with GET api/articles and get expected keys and values in descending order from created_at', () => {
+  test('Test connection with GET api/articles and get expected keys and values in descending order from created_at without queries', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
@@ -84,6 +84,63 @@ describe('Test GET api/articles  endpoint', () => {
         expect(body).toBeSortedBy('created_at', {
           descending: true
         })
+      })
+  })
+  test('Test queries sort_by and order in ascending order', () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic&order=asc')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length === 13).toBe(true)
+        expect(body).toBeSortedBy('topic', {
+          descending: false
+        })
+      })
+  })
+  test('Test queries sort_by and order by comment_count', () => {
+    return request(app)
+      .get('/api/articles?sort_by=comment_count&order=asc')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length === 13).toBe(true)
+        expect(body).toBeSortedBy('comment_count', {
+          descending: false
+        })
+      })
+  })
+  test('Test queries [topic, sort_by and order]', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch&sort_by=comment_count&order=asc')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length === 12).toBe(true)
+        expect(body).toBeSortedBy('comment_count', {
+          descending: false
+        })
+      })
+  })
+  test('Test queries [topic, sort_by and order] but no topic is banana so returns empty array', () => {
+    return request(app)
+      .get('/api/articles?topic=banana&sort_by=comment_count&order=asc')
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toEqual([])
+      })
+  })
+  test('Test queries [topic, sort_by and order] but sort_by is incorrect', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch&sort_by=nothing&order=asc')
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toEqual({msg:"Incorrect sort_by"})
+      })
+  })
+  test('Test queries [topic, sort_by and order] but order is incorrect', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch&sort_by=topic&order=banana')
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toEqual({msg:"Incorrect order"})
       })
   })
 })

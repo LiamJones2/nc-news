@@ -130,18 +130,21 @@ describe('Test GET api/article  endpoint', () => {
   })
 })
 
+
 describe('Test GET api/article/:article_id/comments endpoint', () => {
   test('Test connection with GET api/article/:article_id/comments, should receive 200 as the status code to show connection', () => {
     return request(app)
       .get('/api/articles/1/comments')
       .expect(200)
   })
+
   test('Test connection with GET api/article/:article_id/comments, should return all 12 comments connected to the article 1 and ensure they all have the correct keys and types of values', () => {
     return request(app)
       .get('/api/articles/1/comments')
       .expect(200)
       .then(({body}) => {
         expect(body.length === 12)
+
         body.forEach((article) => {
           expect(article['votes']).toBeInteger()
           expect(article['comment_id']).toBeInteger()
@@ -149,6 +152,14 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
           expect(article['author']).toBeString()
           expect(article['body']).toBeString()
           expect(article['created_at']).toBeString()
+        })
+        expect(body[0]).toEqual({
+          comment_id: 5,
+          body: 'I hate streaming noses',
+          article_id: 1,
+          author: 'icellusedkars',
+          votes: 0,
+          created_at: '2020-11-03T21:00:00.000Z'
         })
       })
   })
@@ -163,8 +174,7 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
         })
       })
   })
-
-  test('Test connection with GET api/article/:article_id/comments, should return an empty array when their is an article but no comments', () => {
+  test('Test connection with GET api/article/:article_id/comments, should return an empty array when there is an article but no comments', () => {
     return request(app)
       .get('/api/articles/2/comments')
       .expect(200)
@@ -172,16 +182,14 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
         expect(body).toEqual([])
       })
   })
-
-  test('Test connection with GET api/article/:article_id/comments, should return 404 Not Found response when there is no article with that article_id', () => {
+  test('Test connection with GET api/article/:article_id/comments, should return 404 Article Not Found response when there is no article with that article_id', () => {
     return request(app)
       .get('/api/articles/100/comments')
       .expect(404)
       .then(({body}) => {
-        expect(body).toEqual({msg:"Not Found"})
+        expect(body).toEqual({msg:"Article Not Found"})
       })
   })
-
   test('Test connection with GET api/article/:article_id/comments, should return 400 Bad Request response when the article_id is in the wrong format', () => {
     return request(app)
       .get('/api/articles/banana/comments')

@@ -2,13 +2,14 @@ const {returnAllCommentsByArticleId, addNewCommentByArticleIdToDatabase, updateC
 
 exports.getAllCommentsByArticleId = (req, res, next) => {
     const {article_id} = req.params
-    returnAllCommentsByArticleId(article_id).then((articles) => {
-        res.status(200).send(articles)
+    returnAllCommentsByArticleId(article_id).then((comments) => {
+        res.status(200).send(comments)
     }).catch((err) => {
         next(err)
     })
 }
 
+//nc-news-6
 exports.postNewCommentByArticleId = (req, res, next) => {
     const {article_id} = req.params
     const {username, body} = req.body

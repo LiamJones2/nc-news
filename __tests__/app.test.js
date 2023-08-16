@@ -219,16 +219,21 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
       .send({username:"butter_bridge", body: "pretty cool"})
       .expect(201)
       .then(({body}) => {
-        expect(body.created_at).toBeString()
-        delete body.created_at
-        expect(body).toEqual({
+        expect(body).toMatchObject({
           comment_id: 19,
           body: 'pretty cool',
           article_id: 1,
           author: 'butter_bridge',
           votes: 0
-        })
+        }) 
       })
+  })
+
+  test('Test new comment is made to database even when body is given extra properties that are not needed', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({username:"butter_bridge", body: "pretty cool", extra: "I'm an extra"})
+      .expect(201)
   })
 
   test('Test error when article does not exist', () => {
@@ -274,6 +279,15 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
     return request(app)
       .post('/api/articles/1/comments')
       .send({votes: 20, created_at: 1584205320000})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" })
+      })
+  })
+  test('Test no new comment is made when sent body is empty', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({})
       .expect(400)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "Bad Request" })

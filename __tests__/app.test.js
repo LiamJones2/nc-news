@@ -295,37 +295,80 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
   })
 })
 
-
 describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test connection with PATCH /api/articles/:article_id endpoint', () => {
     return request(app)
       .patch('/api/articles/1')
-      .send({inc_votes : 10})
+      .send({inc_votes : 1})
       .expect(200)
   })
+
+  test('Test article is returned with updated votes plus 1', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({inc_votes : 1})
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toMatchObject({
+          article_id: 1,
+          title: 'Living in the shadow of a great man',
+          topic: 'mitch',
+          author: 'butter_bridge',
+          body: 'I find this existence challenging',
+          created_at: '2020-07-09T20:11:00.000Z',
+          votes: 101,
+          article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+        })
+      })
+  })
+
   test('Test article is returned with updated votes plus 10', () => {
     return request(app)
       .patch('/api/articles/1')
       .send({inc_votes : 10})
       .expect(200)
       .then(({body}) => {
-        const testDataFirstArticle = {...testData.articleData[0]}
-        testDataFirstArticle.votes = 110
-
-        delete testDataFirstArticle.created_at
-        delete body.article_id
-        delete body.created_at
-
-        expect(body).toEqual(testDataFirstArticle)
+        expect(body).toMatchObject({
+          article_id: 1,
+          title: 'Living in the shadow of a great man',
+          topic: 'mitch',
+          author: 'butter_bridge',
+          body: 'I find this existence challenging',
+          created_at: '2020-07-09T20:11:00.000Z',
+          votes: 110,
+          article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+        })
       })
   })
-  test('Test article is returned with updated votes plus 10', () => {
+
+  test('Test article is returned with updated votes minus 10', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({inc_votes : -10})
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toMatchObject({
+          article_id: 1,
+          title: 'Living in the shadow of a great man',
+          topic: 'mitch',
+          author: 'butter_bridge',
+          body: 'I find this existence challenging',
+          created_at: '2020-07-09T20:11:00.000Z',
+          votes: 90,
+          article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+        })
+      })
+  })
+
+
+  test('Test article is returned with updated votes plus 50', () => {
     return request(app)
       .patch('/api/articles/5')
       .send({inc_votes : 50})
       .expect(200)
       .then(({body}) => {
-        expect(body).toEqual({
+
+        expect(body).toMatchObject({
           article_id: 5,
           title: 'UNCOVERED: catspiracy to bring down democracy',
           topic: 'cats',
@@ -335,24 +378,18 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
           votes: 50,
           article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
         })
+
       })
   })
-  test('Test article is returned with updated votes minus 10', () => {
+
+  test('Test connection with PATCH /api/articles/:article_id endpoint even when given extra unneeded properties in body', () => {
     return request(app)
       .patch('/api/articles/1')
-      .send({inc_votes : -10})
+      .send({inc_votes : 1, banana:"Banana"})
       .expect(200)
-      .then(({body}) => {
-        const testDataFirstArticle = {...testData.articleData[0]}
-        testDataFirstArticle.votes = 90
-
-        delete testDataFirstArticle.created_at
-        delete body.article_id
-        delete body.created_at
-
-        expect(body).toEqual(testDataFirstArticle)
-      })
   })
+
+
   test('Test should return 400 Bad Request response when the body does not have the correct information', () => {
     return request(app)
       .patch('/api/articles/banana')
@@ -362,13 +399,40 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
         expect(body).toEqual({ msg: "Bad Request" })
       })
   })
+
+
   test('Test should return 400 Bad Request response when the body does not have the correct information', () => {
+
     return request(app)
       .patch('/api/articles/1')
       .send({votes: 20})
       .expect(400)
       .then(({ body }) => {
+
         expect(body).toEqual({ msg: "Bad Request" })
       })
   })
+
+  test('Test should return 400 Bad Request response when the body does not have the correct information', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" })
+      })
+  })
+
+  test('Test should return 404 Article Not Found response when there is no article with that id', () => {
+    return request(app)
+      .patch('/api/articles/99999')
+      .send({inc_votes: 20})
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Article Not Found" })
+      })
+  })
+
+
+
 })

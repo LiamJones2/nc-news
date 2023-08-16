@@ -16,7 +16,6 @@ exports.returnAllCommentsByArticleId = (article_id) => {
 }
 
 
-//nc-news-7
 exports.addNewCommentByArticleIdToDatabase = (article_id, username, body) => {
     article_id = Number(article_id)
     if (username === undefined || body === undefined) return Promise.reject({ status: 400, msg: "Bad Request" })
@@ -36,4 +35,18 @@ exports.addNewCommentByArticleIdToDatabase = (article_id, username, body) => {
             }
         })
 }
-//nc-news-7
+
+
+exports.deleteCommentFromDatabase = (comment_id) => {
+    comment_id = Number(comment_id)
+    return db.query('SELECT * FROM comments WHERE comment_id = $1',[comment_id])
+        .then((comment) => {
+            if (comment.rows.length === 0) return Promise.reject({ status: 404, msg: "Comment Not Found" })            
+            else {
+                return db.query('DELETE FROM comments WHERE comment_id = $1;', [comment_id])
+                    .then(() => {
+                        return
+                    })
+            }
+        })
+}

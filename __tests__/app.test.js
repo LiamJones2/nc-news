@@ -432,7 +432,37 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
         expect(body).toEqual({ msg: "Article Not Found" })
       })
   })
+})
 
 
 
+describe('Test delete /api/comments/:comment_id endpoint', () => {
+  test('Test connection with endpoint, should return 204', () => {
+    return request(app)
+      .delete('/api/comments/1')
+      .expect(204)
+  })
+  test('Test connection with endpoint, should return 204', () => {
+    return request(app)
+      .delete('/api/comments/5')
+      .expect(204)
+  })
+
+  test('Test connection with endpoint, should return 404 when given a comment_id that does not exist', () => {
+    return request(app)
+      .delete('/api/comments/99999')
+      .expect(404)
+      .then(({body})=> {
+        expect(body).toEqual({msg: "Comment Not Found"})
+      })
+  })
+
+  test('Test connection with endpoint, should return 400 when given an invalid comment_id', () => {
+    return request(app)
+      .delete('/api/comments/banana')
+      .expect(400)
+      .then(({body})=> {
+        expect(body).toEqual({msg: "Bad Request"})
+      })
+      })
 })

@@ -1,4 +1,4 @@
-const {returnAllCommentsByArticleId, addNewCommentByArticleIdToDatabase, updateCommentVotesByCommentId} = require('../models/comments.model.js')
+const {returnAllCommentsByArticleId, addNewCommentByArticleIdToDatabase, deleteCommentFromDatabase} = require('../models/comments.model.js')
 
 exports.getAllCommentsByArticleId = (req, res, next) => {
     const {article_id} = req.params
@@ -12,23 +12,19 @@ exports.getAllCommentsByArticleId = (req, res, next) => {
 //nc-news-7
 
 exports.postNewCommentByArticleId = (req, res, next) => {
-
     const {article_id} = req.params
     const {username, body} = req.body
-
     addNewCommentByArticleIdToDatabase(article_id, username, body).then((rows) => {
-
         res.status(201).send(rows[0])
     }).catch((err) => {
-        next(err)
-        
+        next(err)        
     })
 }
 
-exports.patchCommentVotesByCommentId = (req, res, next) => {
-    const {article_id} = req.params
-    addNewCommentByArticleIdToDatabase(article_id).then((rows) => {
-        res.status(200).send(rows[0])
+exports.deleteCommentByCommentId = (req, res, next) => {
+    const {comment_id} = req.params
+    deleteCommentFromDatabase(comment_id).then(() => {
+        res.status(204).send()
     }).catch((err) => {
         next(err)
     })

@@ -4,7 +4,7 @@ const app = express();
 const {returnEndpoints} = require('./controllers/app.controller.js')
 const {getTopics} = require('./controllers/topics.controller.js')
 const {getAllArticles, getArticle, patchVotesByArticleId} = require('./controllers/articles.controller.js')
-const {getAllCommentsByArticleId, postNewCommentByArticleId} = require('./controllers/comments.controller.js')
+const {getAllCommentsByArticleId, postNewCommentByArticleId, deleteCommentByCommentId} = require('./controllers/comments.controller.js')
 
 app.use(express.json());
 
@@ -22,6 +22,8 @@ app.get('/api/articles/:article_id/comments', getAllCommentsByArticleId);
 app.post('/api/articles/:article_id/comments', postNewCommentByArticleId);
 
 app.patch('/api/articles/:article_id', patchVotesByArticleId);
+
+app.delete('/api/comments/:comment_id', deleteCommentByCommentId);
 
 app.use((err, req, res, next) => {
     if (err.status){

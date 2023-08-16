@@ -68,5 +68,10 @@
       "votes": 101,
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "If there is a comment with that id, it is deleted",
+    "queries": [],
+    "exampleResponse": "No response"
   }
 }

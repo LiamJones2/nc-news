@@ -88,13 +88,13 @@ describe('Test GET api/articles  endpoint', () => {
   })
 })
 
-describe.only('Test GET api/article  endpoint', () => {
-  test.only('Test connection with GET api/article, should receive 200 as the status code to show connection', () => {
+describe('Test GET api/article  endpoint', () => {
+  test('Test connection with GET api/article, should receive 200 as the status code to show connection', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)
   })
-  test('Test connection with GET api/article, should receive an article', () => {
+  test('Test connection with GET api/article, should receive an article with all keys', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)
@@ -105,6 +105,7 @@ describe.only('Test GET api/article  endpoint', () => {
           topic: "mitch",
           author: "butter_bridge",
           body: "I find this existence challenging",
+          comment_count: "11",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
           article_img_url:

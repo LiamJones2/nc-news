@@ -1,6 +1,6 @@
 const db = require('../db/connection.js');
 
-exports.returnAllArticles = (topic, sort_by, order) => {
+exports.returnAllArticles = (topic = null, sort_by = "created_at", order = "desc") => {
     let articlesQuery = 'SELECT articles.*, COUNT(comments.comment_id) as comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id'
 
     if(topic !== null) articlesQuery += ' WHERE topic = $1'
@@ -11,7 +11,8 @@ exports.returnAllArticles = (topic, sort_by, order) => {
     else {
         articlesQuery += ` ORDER BY ${sort_by}`
     }
-    if(order.toLowerCase() !== "desc" && order.toLowerCase() !== "asc") return Promise.reject({status:404, msg:"Incorrect order"})
+    const acceptableOrder = ["asc","desc"]
+    if(!acceptableOrder.includes(order.toLowerCase())) return Promise.reject({status:404, msg:"Incorrect order"})
     else {
         articlesQuery += ` ${order};`
     }

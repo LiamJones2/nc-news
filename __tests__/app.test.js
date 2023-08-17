@@ -75,9 +75,42 @@ describe('Test GET api/articles  endpoint', () => {
         })
       })
   })
-  test('Test connection with GET api/articles and get expected keys and values in descending order from created_at without queries', () => {
+  test('Test default values, should be descending by created_at', () => {
     return request(app)
       .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length === 13).toBe(true)
+        expect(body).toBeSortedBy('created_at', {
+          descending: true
+        })
+      })
+  })
+  test('Test queries sort_by', () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length === 13).toBe(true)
+        expect(body).toBeSortedBy('topic', {
+          descending: true
+        })
+      })
+  })
+  test('Test queries order in ascending order', () => {
+    return request(app)
+      .get('/api/articles?order=asc')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.length === 13).toBe(true)
+        expect(body).toBeSortedBy('created_at', {
+          descending: false
+        })
+      })
+  })
+  test('Test queries order in descending order', () => {
+    return request(app)
+      .get('/api/articles?order=desc')
       .expect(200)
       .then(({body}) => {
         expect(body.length === 13).toBe(true)
@@ -99,13 +132,22 @@ describe('Test GET api/articles  endpoint', () => {
   })
   test('Test queries sort_by and order by comment_count', () => {
     return request(app)
-      .get('/api/articles?sort_by=comment_count&order=asc')
+      .get('/api/articles?sort_by=comment_count&order=desc')
       .expect(200)
       .then(({body}) => {
         expect(body.length === 13).toBe(true)
         expect(body).toBeSortedBy('comment_count', {
-          descending: false
+          descending: true
         })
+      })
+  })
+  test('Test queries topic, should return an empty array when there is topic with that name yet', () => {
+    return request(app)
+      .get('/api/articles?topic=paper')
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toHaveLength(0)
+        expect(body).toEqual([])
       })
   })
   test('Test queries [topic, sort_by and order]', () => {

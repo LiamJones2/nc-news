@@ -1,7 +1,7 @@
 const {returnAllArticles, returnArticle, updateArticleVotesInDatabase} = require('../models/articles.model.js')
 
 exports.getAllArticles = (req, res, next) => {
-    const {topic = null, sort_by = "created_at", order = "desc"} = req.query
+    const {topic, sort_by, order} = req.query
     returnAllArticles(topic, sort_by, order).then((articles) => {
         res.status(200).send(articles)
     }).catch((err) => {

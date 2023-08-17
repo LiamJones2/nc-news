@@ -193,7 +193,7 @@ describe('Test GET api/article  endpoint', () => {
       .get('/api/articles/1')
       .expect(200)
   })
-  test('Test connection with GET api/article, should receive an article', () => {
+  test('Test connection with GET api/article, should receive an article with all keys', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)
@@ -204,6 +204,7 @@ describe('Test GET api/article  endpoint', () => {
           topic: "mitch",
           author: "butter_bridge",
           body: "I find this existence challenging",
+          comment_count: "11",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
           article_img_url:

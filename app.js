@@ -5,6 +5,8 @@ const {returnEndpoints} = require('./controllers/app.controller.js')
 const {getTopics} = require('./controllers/topics.controller.js')
 const {getAllArticles, getArticle, patchVotesByArticleId} = require('./controllers/articles.controller.js')
 const {getAllCommentsByArticleId, postNewCommentByArticleId, deleteCommentByCommentId} = require('./controllers/comments.controller.js')
+const {getAllUsers} = require('./controllers/users.controller.js')
+
 
 app.use(express.json());
 
@@ -18,6 +20,8 @@ app.get('/api/articles/:article_id', getArticle);
 
 //nc-news-6
 app.get('/api/articles/:article_id/comments', getAllCommentsByArticleId);
+
+app.get('/api/users', getAllUsers)
 
 app.post('/api/articles/:article_id/comments', postNewCommentByArticleId);
 

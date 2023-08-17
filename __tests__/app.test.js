@@ -173,7 +173,6 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
         expect(body.length === 12)
         expect(body.comments).toBeSortedBy('created_at', {
           descending : true
-
         })
       })
   })
@@ -440,11 +439,6 @@ describe('Test delete /api/comments/:comment_id endpoint', () => {
   test('Test connection with endpoint, should return 204', () => {
     return request(app)
       .delete('/api/comments/1')
-      .expect(204)
-  })
-  test('Test connection with endpoint, should return 204', () => {
-    return request(app)
-      .delete('/api/comments/5')
       .expect(204)
   })
 

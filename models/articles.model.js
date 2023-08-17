@@ -1,11 +1,27 @@
 const db = require('../db/connection.js');
 
-exports.returnAllArticles = () => {
-    const articlesQuery = 'SELECT articles.*, COUNT(comments.comment_id) as comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;'
-    return db.query(articlesQuery).then(({ rows }) => {
+exports.returnAllArticles = (topic = null, sort_by = "created_at", order = "desc") => {
+    let articlesQuery = 'SELECT articles.*, COUNT(comments.comment_id) as comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id'
+
+    if(topic !== null) articlesQuery += ' WHERE topic = $1'
+    articlesQuery += ' GROUP BY articles.article_id'
+
+    const acceptableSort_By = ["title", "topic", "author", "body", "created_at", "article_img_url", "comment_count"]
+    if(!acceptableSort_By.includes(sort_by)) return Promise.reject({status:404, msg:"Incorrect sort_by"})
+    else {
+        articlesQuery += ` ORDER BY ${sort_by}`
+    }
+    const acceptableOrder = ["asc","desc"]
+    if(!acceptableOrder.includes(order.toLowerCase())) return Promise.reject({status:404, msg:"Incorrect order"})
+    else {
+        articlesQuery += ` ${order};`
+    }
+
+    const topicArray = topic !== null ? [topic] : [];
+    return db.query(articlesQuery,topicArray).then(({ rows }) => {
         rows.forEach((article) => {
             delete article.body
-            +article.comment_count 
+            article.comment_count = +article.comment_count 
         })
         return rows
     })

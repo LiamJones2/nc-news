@@ -436,3 +436,35 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
 
 
 })
+
+
+describe('Test get /api/users', () => {
+  test('Test connection with /api/users', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+  })
+
+  test('Test all objects returned have (username name avatar_url) keys', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.users.length === 4).toBe(true)
+        body.users.forEach((user) => {
+          expect(user.hasOwnProperty("username")).toBe(true)
+          expect(user.hasOwnProperty("name")).toBe(true)
+          expect(user.hasOwnProperty("avatar_url")).toBe(true)
+        })
+      })
+  })
+
+  test('Test all objects returned have correct keys and values', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.users).toMatchObject(testData.userData)
+      })
+  })
+})

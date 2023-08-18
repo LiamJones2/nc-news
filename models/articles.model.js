@@ -36,12 +36,7 @@ exports.returnArticle = (article_id) => {
     })
 }
 
-//nc-news-8
 exports.updateArticleVotesInDatabase = (article_id, inc_votes) => {
-
-    article_id = Number(article_id)
-    inc_votes = Number(inc_votes)
-
     return db.query('SELECT * FROM articles WHERE article_id = $1', [article_id])
         .then(({ rows }) => {
 
@@ -56,4 +51,3 @@ exports.updateArticleVotesInDatabase = (article_id, inc_votes) => {
             }
         })
 }
-//nc-news-8

@@ -51,7 +51,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 13).toBe(true)
         expect(body[0]).toEqual({
           article_id: 3,
@@ -79,7 +79,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 13).toBe(true)
         expect(body).toBeSortedBy('created_at', {
           descending: true
@@ -90,7 +90,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?sort_by=topic')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 13).toBe(true)
         expect(body).toBeSortedBy('topic', {
           descending: true
@@ -101,7 +101,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?order=asc')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 13).toBe(true)
         expect(body).toBeSortedBy('created_at', {
           descending: false
@@ -112,7 +112,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?order=desc')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 13).toBe(true)
         expect(body).toBeSortedBy('created_at', {
           descending: true
@@ -123,7 +123,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?sort_by=topic&order=asc')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 13).toBe(true)
         expect(body).toBeSortedBy('topic', {
           descending: false
@@ -134,7 +134,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?sort_by=comment_count&order=desc')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 13).toBe(true)
         expect(body).toBeSortedBy('comment_count', {
           descending: true
@@ -145,7 +145,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?topic=paper')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body).toHaveLength(0)
         expect(body).toEqual([])
       })
@@ -154,7 +154,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?topic=mitch&sort_by=comment_count&order=asc')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 12).toBe(true)
         expect(body).toBeSortedBy('comment_count', {
           descending: false
@@ -165,7 +165,7 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?topic=banana&sort_by=comment_count&order=asc')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body).toEqual([])
       })
   })
@@ -173,16 +173,16 @@ describe('Test GET api/articles  endpoint', () => {
     return request(app)
       .get('/api/articles?topic=mitch&sort_by=nothing&order=asc')
       .expect(404)
-      .then(({body}) => {
-        expect(body).toEqual({msg:"Incorrect sort_by"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Incorrect sort_by" })
       })
   })
   test('Test queries [topic, sort_by and order] but order is incorrect', () => {
     return request(app)
       .get('/api/articles?topic=mitch&sort_by=topic&order=banana')
       .expect(404)
-      .then(({body}) => {
-        expect(body).toEqual({msg:"Incorrect order"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Incorrect order" })
       })
   })
 })
@@ -198,18 +198,20 @@ describe('Test GET api/article  endpoint', () => {
       .get('/api/articles/1')
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({article : {
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          comment_count: "11",
-          created_at: "2020-07-09T20:11:00.000Z",
-          votes: 100,
-          article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-        }})
+        expect(body).toEqual({
+          article: {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            comment_count: "11",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          }
+        })
       })
   })
   test('Test that article id requested does not exist causing a Not Found 404 response when given a number', () => {
@@ -242,7 +244,7 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
     return request(app)
       .get('/api/articles/1/comments')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 12)
 
         body.comments.forEach((article) => {
@@ -265,14 +267,14 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
   })
 
   test('Test connection with GET api/article/:article_id/comments, should return all 12 comments connected to the article 1 but ensure it is in DESCENDING order so newest comments appear first', () => {
-    
+
     return request(app)
       .get('/api/articles/1/comments')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.length === 12)
         expect(body.comments).toBeSortedBy('created_at', {
-          descending : true
+          descending: true
         })
       })
   })
@@ -280,16 +282,16 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
     return request(app)
       .get('/api/articles/2/comments')
       .expect(200)
-      .then(({body}) => {
-        expect(body).toEqual({comments:[]})
+      .then(({ body }) => {
+        expect(body).toEqual({ comments: [] })
       })
   })
   test('Test connection with GET api/article/:article_id/comments, should return 404 Article Not Found response when there is no article with that article_id', () => {
     return request(app)
       .get('/api/articles/100/comments')
       .expect(404)
-      .then(({body}) => {
-        expect(body).toEqual({msg:"Article Not Found"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Article Not Found" })
       })
   })
   test('Test connection with GET api/article/:article_id/comments, should return 400 Bad Request response when the article_id is in the wrong format', () => {
@@ -302,63 +304,164 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
   })
 })
 
+describe('Test PATCH api/comments/:comment_id endpoint', () => {
+  test('Test connection with PATCH api/comments/:comment_id, should receive 200 as the status code to show connection', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: 1 })
+      .expect(200)
+  })
+  test('Test comment votes are increased', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: 50 })
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toMatchObject({
+          "article_id": 9,
+          "author": "butter_bridge",
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          "comment_id": 1,
+          "created_at": "2020-04-06T12:17:00.000Z",
+          "votes": 66,
+          })
+      })
+  })
+  test('Test comment votes are decreased', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: -10 })
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toMatchObject({
+          "article_id": 9,
+          "author": "butter_bridge",
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          "comment_id": 1,
+          "created_at": "2020-04-06T12:17:00.000Z",
+          "votes": 6,
+          })
+      })
+  })
+  test('Test comment votes are decreased even with extra keys in body', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: -10 , random:"here"})
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toMatchObject({
+          "article_id": 9,
+          "author": "butter_bridge",
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          "comment_id": 1,
+          "created_at": "2020-04-06T12:17:00.000Z",
+          "votes": 6,
+          })
+      })
+  })
+  test('Test that error message 404 Comment Not Found is return when comment does not exist', () => {
+    return request(app)
+      .patch('/api/comments/999999')
+      .send({ inc_votes: -10 })
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Comment Not Found"})
+      })
+  })
+  test('Test that error message 404 Comment Not Found is return when comment does not exist', () => {
+    return request(app)
+      .patch('/api/comments/banana')
+      .send({ inc_votes: -10 })
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toEqual({msg:"Bad Request"})
+      })
+  })
+  test('Test that error message 400 Bad Request is returned when inc_votes is not sent with a body', () => {
+    return request(app)
+      .patch('/api/comments/banana')
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toEqual({msg:"Bad Request"})
+      })
+  })
+  test('Test that error message 400 Bad Request is returned when inc_votes is invalid', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({inc_votes:"banana"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toEqual({msg:"Bad Request"})
+      })
+  })
+  test('Test that error message 400 Bad Request is returned when we send over an incorrect inc_votes format', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({votes:20})
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toEqual({msg:"Bad Request"})
+      })
+  })
+})
+
 
 
 describe('Test POST /api/article/:article_id/comments endpoint', () => {
   test('Test connection with /api/article/:article_id/comments endpoint', () => {
     return request(app)
       .post('/api/articles/1/comments')
-      .send({username:"butter_bridge", body: "pretty cool"})
+      .send({ username: "butter_bridge", body: "pretty cool" })
       .expect(201)
   })
 
   test('Test new comment is made to database as confirmed by returned object of what was added to database', () => {
     return request(app)
       .post('/api/articles/1/comments')
-      .send({username:"butter_bridge", body: "pretty cool"})
+      .send({ username: "butter_bridge", body: "pretty cool" })
       .expect(201)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body).toMatchObject({
           comment_id: 19,
           body: 'pretty cool',
           article_id: 1,
           author: 'butter_bridge',
           votes: 0
-        }) 
+        })
       })
   })
 
   test('Test new comment is made to database even when body is given extra properties that are not needed', () => {
     return request(app)
       .post('/api/articles/1/comments')
-      .send({username:"butter_bridge", body: "pretty cool", extra: "I'm an extra"})
+      .send({ username: "butter_bridge", body: "pretty cool", extra: "I'm an extra" })
       .expect(201)
   })
 
   test('Test error when article does not exist', () => {
     return request(app)
       .post('/api/articles/9999/comments')
-      .send({username:"butter_bridge", body: "pretty cool"})
+      .send({ username: "butter_bridge", body: "pretty cool" })
       .expect(404)
-      .then(({body}) => {
-        expect(body).toEqual({msg:"Article Not Found"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Article Not Found" })
       })
   })
 
   test('Test error when username does not exist', () => {
     return request(app)
       .post('/api/articles/1/comments')
-      .send({username:"THISUSERSHOULDNOTEXIST", body: "pretty cool"})
+      .send({ username: "THISUSERSHOULDNOTEXIST", body: "pretty cool" })
       .expect(404)
-      .then(({body}) => {
-        expect(body).toEqual({msg:"Username Not Found"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Username Not Found" })
       })
   })
 
   test('Test should return 400 Bad Request response when the article_id is in the wrong format', () => {
     return request(app)
       .post('/api/articles/banana/comments')
-      .send({username:"butter_bridge", body: "pretty cool"})
+      .send({ username: "butter_bridge", body: "pretty cool" })
       .expect(400)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "Bad Request" })
@@ -377,7 +480,7 @@ describe('Test POST /api/article/:article_id/comments endpoint', () => {
   test('Test should return 400 Bad Request response when the body does not have the correct information', () => {
     return request(app)
       .post('/api/articles/1/comments')
-      .send({votes: 20, created_at: 1584205320000})
+      .send({ votes: 20, created_at: 1584205320000 })
       .expect(400)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "Bad Request" })
@@ -398,16 +501,16 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test connection with PATCH /api/articles/:article_id endpoint', () => {
     return request(app)
       .patch('/api/articles/1')
-      .send({inc_votes : 1})
+      .send({ inc_votes: 1 })
       .expect(200)
   })
 
   test('Test article is returned with updated votes plus 1', () => {
     return request(app)
       .patch('/api/articles/1')
-      .send({inc_votes : 1})
+      .send({ inc_votes: 1 })
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body).toMatchObject({
           article_id: 1,
           title: 'Living in the shadow of a great man',
@@ -424,9 +527,9 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test article is returned with updated votes plus 10', () => {
     return request(app)
       .patch('/api/articles/1')
-      .send({inc_votes : 10})
+      .send({ inc_votes: 10 })
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body).toMatchObject({
           article_id: 1,
           title: 'Living in the shadow of a great man',
@@ -443,9 +546,9 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test article is returned with updated votes minus 10', () => {
     return request(app)
       .patch('/api/articles/1')
-      .send({inc_votes : -10})
+      .send({ inc_votes: -10 })
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body).toMatchObject({
           article_id: 1,
           title: 'Living in the shadow of a great man',
@@ -463,9 +566,9 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test article is returned with updated votes plus 50', () => {
     return request(app)
       .patch('/api/articles/5')
-      .send({inc_votes : 50})
+      .send({ inc_votes: 50 })
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
 
         expect(body).toMatchObject({
           article_id: 5,
@@ -484,7 +587,7 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test connection with PATCH /api/articles/:article_id endpoint even when given extra unneeded properties in body', () => {
     return request(app)
       .patch('/api/articles/1')
-      .send({inc_votes : 1, banana:"Banana"})
+      .send({ inc_votes: 1, banana: "Banana" })
       .expect(200)
   })
 
@@ -492,7 +595,7 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test should return 400 Bad Request response when the body does not have the correct information', () => {
     return request(app)
       .patch('/api/articles/banana')
-      .send({votes: 20, created_at: 1584205320000})
+      .send({ votes: 20, created_at: 1584205320000 })
       .expect(400)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "Bad Request" })
@@ -504,7 +607,7 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
 
     return request(app)
       .patch('/api/articles/1')
-      .send({votes: 20})
+      .send({ votes: 20 })
       .expect(400)
       .then(({ body }) => {
 
@@ -525,7 +628,7 @@ describe('Test PATCH /api/articles/:article_id endpoint', () => {
   test('Test should return 404 Article Not Found response when there is no article with that id', () => {
     return request(app)
       .patch('/api/articles/99999')
-      .send({inc_votes: 20})
+      .send({ inc_votes: 20 })
       .expect(404)
       .then(({ body }) => {
         expect(body).toEqual({ msg: "Article Not Found" })
@@ -546,8 +649,8 @@ describe('Test delete /api/comments/:comment_id endpoint', () => {
     return request(app)
       .delete('/api/comments/99999')
       .expect(404)
-      .then(({body})=> {
-        expect(body).toEqual({msg: "Comment Not Found"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Comment Not Found" })
       })
   })
 
@@ -555,10 +658,10 @@ describe('Test delete /api/comments/:comment_id endpoint', () => {
     return request(app)
       .delete('/api/comments/banana')
       .expect(400)
-      .then(({body})=> {
-        expect(body).toEqual({msg: "Bad Request"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Bad Request" })
       })
-      })
+  })
 })
 
 
@@ -573,7 +676,7 @@ describe('Test get /api/users', () => {
     return request(app)
       .get('/api/users')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.users.length === 4).toBe(true)
         body.users.forEach((user) => {
           expect(user.hasOwnProperty("username")).toBe(true)
@@ -587,7 +690,7 @@ describe('Test get /api/users', () => {
     return request(app)
       .get('/api/users')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.users).toMatchObject(testData.userData)
       })
   })
@@ -604,7 +707,7 @@ describe('Test get /api/users/:username', () => {
     return request(app)
       .get('/api/users/butter_bridge')
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.user).toMatchObject(testData.userData[0])
       })
   })
@@ -613,8 +716,8 @@ describe('Test get /api/users/:username', () => {
     return request(app)
       .get('/api/users/USERDOESNOTEXIST')
       .expect(404)
-      .then(({body}) => {
-        expect(body).toEqual({msg:"Username Not Found"})
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Username Not Found" })
       })
   })
 })

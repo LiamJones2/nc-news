@@ -3,7 +3,6 @@ const db = require('../db/connection.js');
 
 
 exports.returnAllCommentsByArticleId = (article_id) => {
-    article_id = Number(article_id)
     return db.query('SELECT * FROM articles WHERE article_id = $1', [article_id]).then(({ rows }) => {
         if (rows.length === 0) return Promise.reject({ status: 404, msg: "Article Not Found" })
         else {
@@ -37,9 +36,23 @@ exports.addNewCommentByArticleIdToDatabase = (article_id, username, body) => {
 
 exports.deleteCommentFromDatabase = (comment_id) => {
     return db.query('DELETE FROM comments WHERE comment_id = $1;', [comment_id])
-        .then(({rowCount}) => {           
-            if(rowCount === 0 ) return Promise.reject({status:404, msg:"Comment Not Found"})
+        .then(({ rowCount }) => {
+            if (rowCount === 0) return Promise.reject({ status: 404, msg: "Comment Not Found" })
             return
         })
 }
+
+exports.updateCommentVote = (comment_id, inc_votes) => {
+    return db.query('SELECT * FROM comments WHERE comment_id = $1', [comment_id])
+        .then(({ rows }) => {
+            if (rows.length === 0) return Promise.reject({ status: 404, msg: "Comment Not Found" })
+            else {
+                const newVotes = rows[0].votes + inc_votes
+                return db.query('UPDATE comments SET votes = $2 WHERE comment_id = $1 RETURNING *;', [comment_id,newVotes]).then(({ rows }) => {
+                    return rows
+                })
+            }
+        })
+}
+
 

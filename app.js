@@ -30,7 +30,7 @@ app.use((err, req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    if(err.code === '22P02'){
+    if(err.code === '22P02' || err.code === '23502' || err.msg === "Bad Request"){
         res.status(400).send({msg:"Bad Request"})
     }
     else{

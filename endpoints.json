@@ -26,6 +26,21 @@
       ]
     }
   },
+  "POST /api/articles": {
+    "description": "creates a new article in the database when given a correct author(username), topic(existing topic), body and title. Optional article_img_url",
+    "queries": [],
+    "exampleResponse": {
+      "articles": {
+        "article_id": 14,
+        "title": "New Article",
+        "topic": "paper",
+        "author": "icellusedkars",
+        "body": "This is a new article",
+        "votes": 0,
+        "article_img_url": "this/is/a/random/url"
+      }
+    }
+  },
   "GET /api/articles/:article_id/comments": {
     "description": "searches database for article with id requested",
     "queries": ["author", "topic", "sort_by", "order"],

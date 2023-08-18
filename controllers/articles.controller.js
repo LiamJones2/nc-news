@@ -1,4 +1,4 @@
-const {returnAllArticles, returnArticle, updateArticleVotesInDatabase} = require('../models/articles.model.js')
+const {returnAllArticles, returnArticle, updateArticleVotesInDatabase, addNewArticleToDatabase} = require('../models/articles.model.js')
 
 exports.getAllArticles = (req, res, next) => {
     const {topic, sort_by, order} = req.query
@@ -19,16 +19,21 @@ exports.getArticle = (req, res, next) => {
     })
 }
 
-//nc-news-8
 exports.patchVotesByArticleId = (req, res, next) => {
     const {article_id} = req.params
     const {inc_votes} = req.body
-
     updateArticleVotesInDatabase(article_id, inc_votes).then((rows) => {
         res.status(200).send(rows[0])
     }).catch((err) => {
         next(err)
-        
     })
 }
-//nc-news-8
+
+exports.postNewArticle = (req, res, next) => {
+    const {author, title, body, topic, article_img_url} = req.body
+    addNewArticleToDatabase(author, title, body, topic, article_img_url).then((article) => {
+        res.status(201).send(article)
+    }).catch((err) => {
+        next(err)
+    })
+}

@@ -330,7 +330,8 @@ describe('Test POST /api/articles', ()=> {
           author: 'icellusedkars',
           body: 'This is a new article',
           votes: 0,
-          article_img_url: 'this/is/a/random/url'
+          article_img_url: 'this/is/a/random/url',
+          comment_count : 0
         })
       })  
   })
@@ -347,7 +348,8 @@ describe('Test POST /api/articles', ()=> {
           author: 'icellusedkars',
           body: 'This is a new article',
           votes: 0,
-          article_img_url: 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700'
+          article_img_url: 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700',
+          comment_count : 0
         })
       })  
   })

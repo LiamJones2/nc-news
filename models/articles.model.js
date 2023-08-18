@@ -71,6 +71,7 @@ exports.addNewArticleToDatabase = (author, title, body, topic, article_img_url) 
                 }
                 return db.query(query, queryParams)
                     .then(({ rows }) => {
+                        rows[0].comment_count = 0
                         return rows[0];
                     })
             }

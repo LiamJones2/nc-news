@@ -593,3 +593,29 @@ describe('Test get /api/users', () => {
   })
 })
 
+describe('Test get /api/users/:username', () => {
+  test('Test connection with /api/users/:username', () => {
+    return request(app)
+      .get('/api/users/butter_bridge')
+      .expect(200)
+  })
+
+  test('Test first user in test data', () => {
+    return request(app)
+      .get('/api/users/butter_bridge')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.user).toMatchObject(testData.userData[0])
+      })
+  })
+
+  test('Test 404 Username Not Found when username does not exist', () => {
+    return request(app)
+      .get('/api/users/USERDOESNOTEXIST')
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toEqual({msg:"Username Not Found"})
+      })
+  })
+})
+

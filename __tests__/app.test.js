@@ -304,6 +304,117 @@ describe('Test GET api/article/:article_id/comments endpoint', () => {
   })
 })
 
+describe('Test POST /api/articles', ()=> {
+  test('Test 204 connection with /api/articles', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", title:"New Article", body:"This is a new article", topic:"paper", article_img_url:"1"})
+      .expect(201)
+  })
+  test('Test 204 connection with /api/articles with default article_img_url', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", title:"New Article", body:"This is a new article", topic:"paper"})
+      .expect(201)
+  })
+  test('Test new article is returned with a random article_img_url', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", title:"New Article", body:"This is a new article", topic:"paper", article_img_url:"this/is/a/random/url"})
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toMatchObject({
+          article_id: 14,
+          title: 'New Article',
+          topic: 'paper',
+          author: 'icellusedkars',
+          body: 'This is a new article',
+          votes: 0,
+          article_img_url: 'this/is/a/random/url'
+        })
+      })  
+  })
+  test('Test new article is returned with default article_img_url', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", title:"New Article", body:"This is a new article", topic:"paper"})
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toMatchObject({
+          article_id: 14,
+          title: 'New Article',
+          topic: 'paper',
+          author: 'icellusedkars',
+          body: 'This is a new article',
+          votes: 0,
+          article_img_url: 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700'
+        })
+      })  
+  })
+  test('Test 400 Bad Request when no body is given', () => {
+    return request(app)
+      .post('/api/articles')
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Bad Request"})
+      })
+  })
+  test('Test 400 Bad Request when missing only author', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({title:"New Article", body:"This is a new article", topic:"paper"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Bad Request"})
+      })
+  })
+  test('Test 400 Bad Request when missing only title', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", body:"This is a new article", topic:"paper"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Bad Request"})
+      })
+  })
+  test('Test 400 Bad Request when missing only body', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", title:"New Article", topic:"paper"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Bad Request"})
+      })
+  })
+  test('Test 400 Bad Request when missing only topic', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", body:"This is a new article", title:"New Article"})
+      .expect(400)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Bad Request"})
+      })
+  })
+  test('Test 404', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"authordoesnotexist", body:"This is a new article", topic:"paper", title:"New Article"})
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Author Not Found"})
+      })
+  })
+  test('Test 404', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({author:"icellusedkars", body:"This is a new article", topic:"topicdoesnotexist", title:"New Article"})
+      .expect(404)
+      .then(({body}) => {
+        expect(body).toMatchObject({msg:"Topic Not Found"})
+      })
+  })
+})
+
 describe('Test PATCH api/comments/:comment_id endpoint', () => {
   test('Test connection with PATCH api/comments/:comment_id, should receive 200 as the status code to show connection', () => {
     return request(app)

@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 const apiRouter = require('./routes/api-router.js');
 const articlesRouter = require('./routes/articles-router.js');
@@ -9,11 +10,7 @@ const commentsRouter = require('./routes/comments-router.js');
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin','*');
-
-    next();
-});
+app.use(cors());
 
 app.use('/api', apiRouter);
 

@@ -6,7 +6,7 @@ exports.returnAllArticles = (topic = null, sort_by = "created_at", order = "desc
     if (topic !== null) articlesQuery += ' WHERE topic = $1'
     articlesQuery += ' GROUP BY articles.article_id'
 
-    const acceptableSort_By = ["title", "topic", "author", "body", "created_at", "article_img_url", "comment_count"]
+    const acceptableSort_By = ["title", "topic", "author", "body", "created_at", "article_img_url", "comment_count", "votes"]
     if (!acceptableSort_By.includes(sort_by)) return Promise.reject({ status: 404, msg: "Incorrect sort_by" })
     else {
         articlesQuery += ` ORDER BY ${sort_by}`

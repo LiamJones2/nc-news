@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const { createServer } = require('http');
-const { join } = require('node:path');
+const { join } = require('path');
 
 const cors = require('cors');
 

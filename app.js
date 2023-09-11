@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
-const http = require("http")
-const {Server} = require("socket.io")
+const { createServer } = require('node:http');
+const { join } = require('node:path');
+
 const cors = require('cors');
 
 const apiRouter = require('./routes/api-router.js');
@@ -47,37 +48,45 @@ app.use((err, req, res, next) => {
     res.status(500).send({msg:"Server is unable to access data at the moment"})
 })
 
+
+
 const activeUsers = new Map(); 
 
-const io = require("socket.io")(8080, {
+const server = createServer(app);
+
+const io = require("socket.io")(server, {
     cors: {
-        origin: ["https://liamsnewsonline.netlify.app"],
+        origin: "*", 
         methods: ["GET", "POST"]
     }
-})
-
-io.on("connection", (socket) => {
-    console.log(socket.id);
-
-    activeUsers.set(socket.id, socket);
-
-
-    io.emit("user-connected", socket.id);
-
-
-    socket.on("send-message", (message) => {
-        console.log(`Received message from ${socket.id}: ${message}`);
-
-        io.emit("message", { sender: socket.id, message });
+  });
+  
+  
+  app.get('/', (req, res) => {
+    res.sendFile(join(__dirname, 'index.html'));
+  });
+  
+  // Store user socket information
+  const users = {};
+  
+  io.on('connection', (socket) => {
+    socket.on('join', (room) => {
+      socket.join(room);
+      users[socket.id] = room; 
+      socket.broadcast.to(room).emit('user-connected', { userId: socket.id, message: 'New user has connected' });
     });
-
-    socket.on("disconnect", () => {
-        console.log(`User disconnected: ${socket.id}`);
-
-        activeUsers.delete(socket.id);
-
-        io.emit("user-disconnected", socket.id);
+  
+    socket.on('chat message', (msg) => {
+      console.log(msg)
+      const room = users[socket.id];
+      io.to(room).emit('chat message', msg);
     });
-});
+  
+    socket.on('disconnect', () => {
+      const room = users[socket.id];
+      socket.leave(room);
+      delete users[socket.id];
+    });
+  });
 
 module.exports = app;

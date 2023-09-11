@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const http = require("http")
+const {Server} = require("socket.io")
 const cors = require('cors');
 
 const apiRouter = require('./routes/api-router.js');
@@ -44,5 +46,38 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
     res.status(500).send({msg:"Server is unable to access data at the moment"})
 })
+
+const activeUsers = new Map(); 
+
+const io = require("socket.io")(8080, {
+    cors: {
+        origin: ["https://liamsnewsonline.netlify.app"],
+        methods: ["GET", "POST"]
+    }
+})
+
+io.on("connection", (socket) => {
+    console.log(socket.id);
+
+    activeUsers.set(socket.id, socket);
+
+
+    io.emit("user-connected", socket.id);
+
+
+    socket.on("send-message", (message) => {
+        console.log(`Received message from ${socket.id}: ${message}`);
+
+        io.emit("message", { sender: socket.id, message });
+    });
+
+    socket.on("disconnect", () => {
+        console.log(`User disconnected: ${socket.id}`);
+
+        activeUsers.delete(socket.id);
+
+        io.emit("user-disconnected", socket.id);
+    });
+});
 
 module.exports = app;

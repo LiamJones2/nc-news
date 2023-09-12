@@ -71,6 +71,8 @@ const io = require("socket.io")(server, {
   
   io.on('connection', (socket) => {
     socket.on('join', (room) => {
+      room = 113
+      console.log(room)
       socket.join(room);
       users[socket.id] = room; 
       socket.broadcast.to(room).emit('user-connected', { userId: socket.id, message: 'New user has connected' });
@@ -87,6 +89,11 @@ const io = require("socket.io")(server, {
       socket.leave(room);
       delete users[socket.id];
     });
+  });
+
+  const PORT = process.env.PORT || 8080;
+  server.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
   });
 
 module.exports = app;
